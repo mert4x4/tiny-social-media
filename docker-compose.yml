@@ -1,0 +1,25 @@
+services:
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "${DB_PORT}:${DB_PORT}"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
+
+  web:
+    build: .
+    restart: always
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"
+    depends_on:
+      - db
+
+volumes:
+  db_data:
